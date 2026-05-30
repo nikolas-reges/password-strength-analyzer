@@ -1,31 +1,71 @@
-Aplicação web desenvolvida em Python e Flask para análise de força de senhas em tempo real.
+# 🔐 Password Strength Analyzer
 
-🚀 Funcionalidades
-Avaliação da força da senha de 0 a 100 pontos
-Verificação de comprimento mínimo
-Detecção de letras maiúsculas
-Detecção de números
-Detecção de símbolos especiais
-Barra visual de progresso
-Exibir/Ocultar senha
+Aplicação web desenvolvida em Python e Flask para análise da força de senhas em tempo real.
 
-🛠️ Tecnologias Utilizadas
-Python
-Flask
-HTML5
-CSS3
-JavaScript
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/ec925e41-9a48-418d-a1de-55b2d89d7477" width="700">
+</p>
 
-<img width="723" height="595" alt="image" src="https://github.com/user-attachments/assets/e0d94c2f-383e-4544-9d70-203d7155c898" />
+## 🚀 Funcionalidades
 
-▶️ Como executar
+✅ Análise de força da senha em tempo real
+
+✅ Sistema de pontuação de 0 a 100
+
+✅ Verificação de letras maiúsculas
+
+✅ Verificação de números
+
+✅ Verificação de símbolos especiais
+
+✅ Verificação de comprimento mínimo
+
+✅ Barra visual de progresso
+
+✅ Exibir/Ocultar senha
+
+## 🛠️ Stack Utilizada
+
+| Tecnologia | Função         |
+| ---------- | -------------- |
+| Python     | Backend        |
+| Flask      | Framework Web  |
+| HTML5      | Estrutura      |
+| CSS3       | Interface      |
+| JavaScript | Interatividade |
+
+
+<img width="647" height="593" alt="image" src="https://github.com/user-attachments/assets/4d4fdbbc-dcf9-45ce-bd64-89c98d5d8171" />
+
+
+
+A aplicação fornece feedback instantâneo sobre a segurança da senha digitada, simulando mecanismos utilizados em sistemas reais de autenticação.
+
+## ▶️ Instalação
+
+```bash
 pip install flask
 python app.py
+```
 
 Acesse:
 
+```text
 http://127.0.0.1:5000
-📚 Objetivo
+```
 
+## 🎯 Objetivo
 
-Projeto desenvolvido para praticar conceitos de desenvolvimento web e segurança da informação, simulando a validação de senhas utilizada em aplicações reais.
+Este projeto foi desenvolvido para praticar conceitos de:
+
+* Desenvolvimento Web
+* Segurança da Informação
+* Validação de Senhas
+* Flask
+* Integração Front-End e Back-End
+
+## 👨‍💻 Autor
+
+Nikolas Reges
+
+Projeto desenvolvido para compor meu portfólio de Cibersegurança e Desenvolvimento.
