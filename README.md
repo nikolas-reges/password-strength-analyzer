@@ -1,4 +1,4 @@
-Password Strength Analyzer
+Analisador de Força de Senha
 
 Aplicação web desenvolvida em Python e Flask para análise de força de senhas em tempo real.
 
@@ -16,9 +16,8 @@ Flask
 HTML5
 CSS3
 JavaScript
-📷 Demonstração
+<img width="662" height="498" alt="image" src="https://github.com/user-attachments/assets/ec925e41-9a48-418d-a1de-55b2d89d7477" />
 
-Adicione aqui screenshots do projeto.
 
 ▶️ Como executar
 pip install flask
