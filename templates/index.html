@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Password Analyzer</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0a0e1a;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Courier New', monospace;
+    }
+
+    .card {
+      background: #111827;
+      border: 1px solid #1e2d45;
+      border-radius: 12px;
+      padding: 40px;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 0 40px rgba(0,0,0,0.6);
+    }
+
+    h1 {
+      color: #00ff9d;
+      font-size: 22px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: #4a6080;
+      font-size: 12px;
+      letter-spacing: 1px;
+      margin-bottom: 30px;
+    }
+
+    input {
+      width: 100%;
+      background: #0d1421;
+      border: 1px solid #1e2d45;
+      border-radius: 6px;
+      padding: 14px 16px;
+      color: #00ff9d;
+      font-family: 'Courier New', monospace;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.2s;
+      margin-bottom: 20px;
+    }
+    .senha-container {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.senha-container input {
+  margin-bottom: 0;
+  padding-right: 50px;
+}
+
+#toggleSenha {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: #00ff9d;
+}
+
+    input:focus { border-color: #00ff9d; }
+
+    .barra-bg {
+      background: #0d1421;
+      border-radius: 4px;
+      height: 8px;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+
+    .barra-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.4s ease, background 0.4s ease;
+      width: 0%;
+    }
+
+    .resultado {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .pontos {
+      font-size: 13px;
+      color: #4a6080;
+    }
+
+    .nivel {
+      font-size: 16px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .criterios {
+      margin-top: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .criterio {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      color: #4a6080;
+      letter-spacing: 1px;
+    }
+
+    .criterio .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #1e2d45;
+      flex-shrink: 0;
+      transition: background 0.3s;
+    }
+
+    .criterio.ativo { color: #c8d8f0; }
+    .criterio.ativo .dot { background: #00ff9d; box-shadow: 0 0 6px #00ff9d; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Password Analyzer</h1>
+    <p class="subtitle">// análise de força de senha em tempo real</p>
+
+   <div class="senha-container">
+    <input type="password" id="senha" placeholder="Digite uma senha..." />
+    <button type="button" id="toggleSenha">👁</button>
+</div>
+
+    <div class="barra-bg">
+      <div class="barra-fill" id="barra"></div>
+    </div>
+
+    <div class="resultado">
+      <span class="pontos" id="pontos">0 / 100 pts</span>
+      <span class="nivel" id="nivel">—</span>
+    </div>
+
+    <div class="criterios">
+      <div class="criterio" id="c-tamanho">
+        <div class="dot"></div> Mínimo 8 caracteres
+      </div>
+      <div class="criterio" id="c-longo">
+        <div class="dot"></div> 12 ou mais caracteres
+      </div>
+      <div class="criterio" id="c-maiuscula">
+        <div class="dot"></div> Letra maiúscula
+      </div>
+      <div class="criterio" id="c-numero">
+        <div class="dot"></div> Número
+      </div>
+      <div class="criterio" id="c-simbolo">
+        <div class="dot"></div> Símbolo (!@#$%^&*)
+      </div>
+    </div>
+  </div>
+
+ <script>
+const cores = {
+  "Fraca": "#ef4444",
+  "Média": "#f97316",
+  "Forte": "#fbbf24",
+  "Muito Forte": "#00ff9d"
+};
+
+document.getElementById("senha").addEventListener("input", function () {
+  let senha = this.value;
+
+  fetch("/analisar", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ senha: senha })
+  })
+  .then(r => r.json())
+  .then(data => {
+    const cor = cores[data.nivel] || "#1e2d45";
+
+    document.getElementById("pontos").textContent = data.pontos + " / 100 pts";
+    document.getElementById("nivel").textContent = data.nivel || "—";
+    document.getElementById("nivel").style.color = cor;
+    document.getElementById("barra").style.width = data.pontos + "%";
+    document.getElementById("barra").style.background = cor;
+
+    document.getElementById("c-tamanho").className =
+      "criterio" + (data.pontos >= 20 ? " ativo" : "");
+
+    document.getElementById("c-longo").className =
+      "criterio" + (data.pontos >= 30 ? " ativo" : "");
+
+    document.getElementById("c-maiuscula").className =
+      "criterio" + (data.tem_maiuscula ? " ativo" : "");
+
+    document.getElementById("c-numero").className =
+      "criterio" + (data.tem_numero ? " ativo" : "");
+
+    document.getElementById("c-simbolo").className =
+      "criterio" + (data.tem_simbolo ? " ativo" : "");
+  });
+});
+
+const campoSenha = document.getElementById("senha");
+const toggleSenha = document.getElementById("toggleSenha");
+
+toggleSenha.addEventListener("click", () => {
+  if (campoSenha.type === "password") {
+    campoSenha.type = "text";
+    toggleSenha.textContent = "🙈";
+  } else {
+    campoSenha.type = "password";
+    toggleSenha.textContent = "👁";
+  }
+});
+</script>
