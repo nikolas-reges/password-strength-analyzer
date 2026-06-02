@@ -1,4 +1,5 @@
 from flask import Flask, render_template, jsonify, request
+from zxcvbn import zxcvbn
 import re
 
 app = Flask(__name__)
@@ -10,44 +11,33 @@ def index():
 @app.route("/analisar", methods=["POST"])
 def analisar():
     dados = request.get_json()
-    senha = dados["senha"]
+    senha = dados.get("senha", "")
 
-    pontos = 0
+    # Análise REAL com o algoritmo zxcvbn
+    resultado = zxcvbn(senha)
+    score = resultado["score"]  # Retorna de 0 (muito fraca) a 4 (muito forte)
 
-    # Tamanho da senha
-    if len(senha) >= 8:
-        pontos += 20
+    # Converte o score numérico para o nível em texto
+    niveis = {0: "fraca", 1: "fraca", 2: "media", 3: "forte", 4: "muito forte"}
+    nivel = niveis.get(score, "fraca")
 
-    if len(senha) >= 12:
-        pontos += 10
+    # Calcula uma porcentagem aproximada para a barra de progresso do seu HTML
+    pontos = int((score / 4) * 100) if senha else 0
 
-    # Verificações
-    if re.search(r'[A-Z]', senha):
-        pontos += 20
-
-    if re.search(r'[0-9]', senha):
-        pontos += 20
-
-    if re.search(r'[!@#$%^&*]', senha):
-        pontos += 30
-
-    # Classificação
-    if pontos <= 30:
-        nivel = "fraca"
-    elif pontos <= 60:
-        nivel = "media"
-    elif pontos <= 80:
-        nivel = "forte"
-    else:
-        nivel = "muito forte"
+    # Dicas reais de segurança geradas pelo algoritmo (Tradução rápida)
+    feedback = resultado["feedback"]["suggestions"]
+    aviso = resultado["feedback"]["warning"]
 
     return jsonify({
         "pontos": pontos,
         "nivel": nivel,
         "tem_maiuscula": bool(re.search(r'[A-Z]', senha)),
         "tem_numero": bool(re.search(r'[0-9]', senha)),
-        "tem_simbolo": bool(re.search(r'[!@#$%^&*]', senha))
+        "tem_simbolo": bool(re.search(r'[!@#$%^&*]', senha)),
+        "tempo_cracking": resultado["crack_times_display"]["offline_fast_hashing_1e10_per_second"],
+        "sugestoes": feedback,
+        "aviso": aviso
     })
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=5002)
